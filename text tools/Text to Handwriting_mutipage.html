@@ -1,0 +1,284 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css"
+    integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat&family=Homemade+Apple&family=Indie+Flower&family=Sacramento&family=Satisfy&family=Shadows+Into+Light&family=Smooch&family=Zeyada&display=swap');
+</style>
+
+<!-- Text to Handwriting Generator Container -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="box">
+                <div class="box-body">
+                    <!-- Text input form -->
+                    <div class="mb-3">
+                        <h4><label for="textInput" class="form-label">Enter Text:</label></h4>
+                        <textarea class="form-control" id="textInput" rows="4"
+                            placeholder="Hello! How are you?"></textarea>
+                    </div>
+
+                    <!-- Font selection dropdown -->
+                    <div class="row">
+                        <div class="mb-3 col-md-4">
+                            <label for="fontSelect" class="form-label">Font:</label>
+                            <select class="form-select" id="fontSelect">
+                                <option value="Caveat" style="font-family: 'Caveat', cursive;">Caveat</option>
+                                <option value="Homemade Apple" style="font-family: 'Homemade Apple', cursive;">Homemade
+                                    Apple</option>
+                                <option value="Indie Flower" style="font-family: 'Indie Flower', cursive;">Indie Flower
+                                </option>
+                                <option value="Sacramento" style="font-family: 'Sacramento', cursive;">Sacramento
+                                </option>
+                                <option value="Satisfy" style="font-family: 'Satisfy', cursive;">Satisfy</option>
+                                <option value="Shadows Into Light" style="font-family: 'Shadows Into Light', cursive;">
+                                    Shadows Into Light</option>
+                                <option value="Smooch" style="font-family: 'Smooch', cursive;">Smooch</option>
+                                <option value="Zeyada" style="font-family: 'Zeyada', cursive;">Zeyada</option>
+                                <!-- Add more font as needed -->
+                            </select>
+                        </div>
+
+                        <div class="mb-3 col-md-2">
+                            <label for="colorSelect" class="form-label">Ink Color:</label>
+                            <select class="form-select" id="colorSelect">
+                                <option value="Black" style="color: Black">Black</option>
+                                <option value="Blue" style="color: Blue">Blue</option>
+                                <option value="Red" style="color: Red">Red</option>
+                                <!-- <option value="Green" style="color: Green">Green</option> -->
+                            </select>
+                        </div>
+
+                        <div class="mb-3 col-md-2">
+                            <label for="fontSize" class="form-label">Font Size(px):</label>
+                            <select class="form-select" id="fontSize">
+                                <option value="12">12</option>
+                                <option value="14">14</option>
+                                <option value="16">16</option>
+                                <option value="18">18</option>
+                                <option value="20">20</option>
+                                <option value="24" selected>24</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 col-md-4">
+                            <label for="paperType" class="form-label">Paper Type:</label>
+                            <select class="form-select" id="paperType">
+                                <option value="Black Lined Paper">Black Lined Paper</option>
+                                <option value="Straw Paper">Straw Paper</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Preview area -->
+                    <div class="mb-3" id="previewArea">
+                        <!-- <h4>Handwriting:</h4> -->
+                        <div class="result">
+                            <div class="paper" id="paper">
+                                <div id="previewText" class="handwriting-text"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download buttons -->
+                    <button id="downloadImage" class="btn btn-secondary mb-3 ms-1">Download as Image</button>
+                    <button id="downloadPDF" class="btn btn-secondary mb-3 ms-1">Download as PDF</button>
+
+                    <!-- Clear button -->
+                    <button id="clearButton" class="btn btn-secondary mb-3 ms-1">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Text to Handwriting Generator Script -->
+<script>
+    const paperMap = new Map([
+        ["Straw Paper", "https://justoolz.com/wp-content/uploads/2023/12/straw-paper.jpg"],
+        ["Black Lined Paper", "https://justoolz.com/wp-content/uploads/2023/12/black-lined-paper.jpg"],
+    ]);
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updatePreview();
+    });
+
+    document.getElementById('textInput').addEventListener('input', function () {
+        updatePreview();
+    });
+
+    document.getElementById('fontSelect').addEventListener('change', function () {
+        updatePreview();
+    });
+
+    document.getElementById('colorSelect').addEventListener('change', function () {
+        updatePreview();
+    });
+
+    document.getElementById('fontSize').addEventListener('change', function () {
+        updatePreview();
+    });
+
+    document.getElementById('paperType').addEventListener('change', function () {
+        updatePreview();
+    });
+
+    document.getElementById('downloadImage').addEventListener('click', function () {
+        downloadText('image');
+    });
+
+    document.getElementById('downloadPDF').addEventListener('click', function () {
+        downloadText('pdf');
+    });
+
+    document.getElementById('clearButton').addEventListener('click', function () {
+        clearText();
+    });
+
+    function updatePreview() {
+        var textInput = document.getElementById('textInput').value;
+        if (textInput == '' || textInput == null) {
+            textInput = document.getElementById('textInput').placeholder;
+        }
+        var handwritingStyle = document.getElementById('fontSelect').value;
+        var inkColor = document.getElementById('colorSelect').value;
+        var fontSize = document.getElementById('fontSize').value;
+        var paperType = document.getElementById('paperType').value;
+        var paperUrl = paperMap.get(paperType);
+
+        document.getElementById('paper').style.backgroundImage = `url("${paperUrl}")`;
+        document.getElementById('previewText').style.fontFamily = handwritingStyle;
+        document.getElementById('previewText').style.fontSize = fontSize + "px";
+        document.getElementById('previewText').style.color = inkColor;
+        document.getElementById('previewText').innerHTML = textInput;
+        document.getElementById('previewArea').style.display = 'block';
+    }
+
+    // 新增的方法，用于下载文本内容和背景图片
+    function downloadText(format) {
+        var paper = document.getElementById('paper');
+
+        // 获取设备的像素比率，用于提高生成图片的清晰度
+        var pixelRatio = window.devicePixelRatio || 1;
+
+        // 使用 html2canvas 将 'paper' div 渲染为 Canvas
+        html2canvas(paper, {
+            useCORS: true, // 处理跨域图片
+            scale: pixelRatio, // 使用设备的像素比率
+            logging: true // 开启日志以调试
+        }).then(canvas => {
+            // 获取当前日期和时间，并格式化为 "YYYYMMDD_HHMMSS" 的格式
+            var now = new Date();
+            var timestamp = now.getFullYear().toString() +
+                ('0' + (now.getMonth() + 1)).slice(-2) +
+                ('0' + now.getDate()).slice(-2) + '_' +
+                ('0' + now.getHours()).slice(-2) +
+                ('0' + now.getMinutes()).slice(-2) +
+                ('0' + now.getSeconds()).slice(-2);
+            var fileNameSuffix = '_via_justoolz_com'
+
+            if (format === 'image') {
+                // 将 Canvas 内容转换为图片并下载
+                var link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'handwriting_image_' + timestamp + fileNameSuffix + '.png';;
+                link.click();
+            } else if (format === 'pdf') {
+                // 将 Canvas 内容转换为 PDF 并下载
+                var imgData = canvas.toDataURL('image/png');
+                var pdf = new jspdf.jsPDF();
+                pdf.addImage(imgData, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+                pdf.save('handwriting_pdf_' + timestamp + fileNameSuffix + '.pdf');
+            }
+        });
+    }
+
+    function clearText() {
+        document.getElementById('textInput').value = '';
+        document.getElementById('previewText').innerHTML = '';
+        updatePreview();
+        // document.getElementById('previewArea').style.display = 'none';
+    }
+</script>
+
+<style>
+    #previewText {
+        white-space: pre-wrap;
+        padding: 88px 42px 92px 110px;
+        /* 调整内边距以防文字超出图片 */
+        width: 100%;
+    }
+
+    .paper {
+        margin-top: 50px;
+        display: flex;
+        height: 1123px;
+        width: 794px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .form-control,
+    .form-control:focus {
+        color: var(--ast-global-color-3);
+        background: var(--ast-global-color-2);
+        border-color: var(--ast-global-color-1);
+    }
+
+    /* External styles */
+    body {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-4);
+    }
+
+    .card-body {
+        background: var(--ast-global-color-2);
+    }
+
+    .box input,
+    .box input:focus,
+    .box input:hover,
+    .box select {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-3);
+        border-color: var(--ast-global-color-1);
+    }
+
+    .box {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        /* background-color: #fff; */
+        background-clip: border-box;
+        border: 1px solid var(--ast-global-color-1);
+        border-radius: 6px;
+    }
+
+    .box-body {
+        flex: 1 1 auto;
+        padding: 1rem 1rem;
+    }
+</style>
+
+
+<style>
+    :root {
+        --ast-global-color-0: #16202a;
+        --ast-global-color-1: #4a4a4a;
+        --ast-global-color-2: #24292e;
+        --ast-global-color-3: #fdffff;
+        --ast-global-color-4: #fdffff;
+        --ast-global-color-5: #FFFFFF;
+        --ast-global-color-6: #3087cd;
+        --ast-global-color-7: #111111;
+        --ast-global-color-8: #111111;
+    }
+</style>

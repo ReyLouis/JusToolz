@@ -1,0 +1,175 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css"
+    integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- Gothic Font Generator Container -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="box">
+                <div class="box-body">
+                    <!-- Text input form -->
+                    <div class="mb-3">
+                        <h4><label for="textInput" class="form-label">Enter Text:</label></h4>
+                        <textarea class="form-control" id="textInput" rows="4"
+                            placeholder="Hello! How are you?"></textarea>
+                    </div>
+
+                    <!-- Preview area -->
+                    <div class="mb-3" id="previewArea">
+                        <h4>Gothic:</h4>
+                        <div id="previewText" class="gothic-text"></div>
+                    </div>
+
+                    <!-- Copy button -->
+                    <button id="copyButton" onclick="copyToClipboard()" class="btn btn-secondary mb-3 ms-1">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gothic Text Generator Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var textInput = document.getElementById('textInput').placeholder;
+        var gothicText = convertToGothic(textInput);
+        document.getElementById('previewText').innerHTML = gothicText;
+        document.getElementById('previewArea').style.display = 'block';
+    });
+
+    document.getElementById('textInput').addEventListener('input', function () {
+        var textInput = document.getElementById('textInput').value;
+        if (textInput == '' || textInput == null){
+            textInput = document.getElementById('textInput').placeholder;
+        }
+        var gothicText = convertToGothic(textInput);
+        document.getElementById('previewText').innerHTML = gothicText;
+        document.getElementById('previewArea').style.display = 'block';
+    });
+
+    function copyToClipboard() {
+        var previewText = document.getElementById('previewText');
+
+        // Create a textarea element to hold the text
+        var textarea = document.createElement('textarea');
+        textarea.value = previewText.textContent;
+
+        // Append the textarea to the document
+        document.body.appendChild(textarea);
+
+        // Select and copy the text
+        textarea.select();
+        document.execCommand('copy');
+
+        // Remove the textarea from the document
+        document.body.removeChild(textarea);
+
+        // Change button text to indicate successful copy
+        copyButton.innerText = '√';
+
+        // Reset button text after a short delay (optional)
+        setTimeout(function () {
+            copyButton.innerText = 'Copy';
+        }, 2000); // 2000 milliseconds (2 seconds)
+
+    }
+
+    function convertToGothic(text) {
+        // Define mapping of characters to Gothic font equivalents
+        var gothicMap = {
+            'a': '𝖆', 'b': '𝖇', 'c': '𝖈', 'd': '𝖉', 'e': '𝖊',
+            'f': '𝖋', 'g': '𝖌', 'h': '𝖍', 'i': '𝖎', 'j': '𝖏',
+            'k': '𝖐', 'l': '𝖑', 'm': '𝖒', 'n': '𝖓', 'o': '𝖔',
+            'p': '𝖕', 'q': '𝖖', 'r': '𝖗', 's': '𝖘', 't': '𝖙',
+            'u': '𝖚', 'v': '𝖛', 'w': '𝖜', 'x': '𝖝', 'y': '𝖞',
+            'z': '𝖟',
+            'A': '𝕬', 'B': '𝕭', 'C': '𝕮', 'D': '𝕯', 'E': '𝕰',
+            'F': '𝕱', 'G': '𝕲', 'H': '𝕳', 'I': '𝕴', 'J': '𝕵',
+            'K': '𝕶', 'L': '𝕷', 'M': '𝕸', 'N': '𝕹', 'O': '𝕺',
+            'P': '𝕻', 'Q': '𝕼', 'R': '𝕽', 'S': '𝕾', 'T': '𝕿',
+            'U': '𝖀', 'V': '𝖁', 'W': '𝖂', 'X': '𝖃', 'Y': '𝖄',
+            'Z': '𝖅'
+        };
+
+        // Convert each character in the input text
+        var gothicText = Array.from(text, function (char) {
+            return gothicMap[char] || char;
+        }).join('');
+
+        return gothicText;
+    }
+</script>
+
+<style>
+    #previewArea {
+        /* 预览区域样式 */
+        font-size: 22px;
+        /* 添加合适的字体大小 */
+    }
+
+    #previewText {
+        white-space: pre-wrap;
+    }
+
+    #copyButton {
+        min-width: 64px;
+    }
+
+    .form-control,
+    .form-control:focus {
+        color: var(--ast-global-color-3);
+        background: var(--ast-global-color-2);
+        border-color: var(--ast-global-color-1);
+    }
+
+    /* 外部样式 */
+    body {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-4);
+    }
+
+    .card-body {
+        background: var(--ast-global-color-2);
+    }
+
+    .box input,
+    .box input:focus,
+    .box input:hover,
+    .box select {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-3);
+        border-color: var(--ast-global-color-1);
+    }
+
+    .box {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        /* background-color: #fff; */
+        background-clip: border-box;
+        border: 1px solid var(--ast-global-color-1);
+        border-radius: 6px;
+    }
+
+    .box-body {
+        flex: 1 1 auto;
+        padding: 1rem 1rem;
+    }
+</style>
+
+<style>
+    :root {
+        --ast-global-color-0: #16202a;
+        --ast-global-color-1: #4a4a4a;
+        --ast-global-color-2: #24292e;
+        --ast-global-color-3: #fdffff;
+        --ast-global-color-4: #fdffff;
+        --ast-global-color-5: #FFFFFF;
+        --ast-global-color-6: #3087cd;
+        --ast-global-color-7: #111111;
+        --ast-global-color-8: #111111;
+    }
+</style>

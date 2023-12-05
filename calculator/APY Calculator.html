@@ -1,0 +1,129 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css"
+    integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- APY Calculator Container -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-body">
+                    <!-- Input Form -->
+                    <div class="mb-3">
+                        <label for="principal" class="form-label">Principal ($):</label>
+                        <input type="number" class="form-control" id="principal" oninput="calculateAPY()">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="interestRate" class="form-label">Interest Rate (%):</label>
+                        <input type="number" class="form-control" id="interestRate" oninput="calculateAPY()">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="compoundingPeriods" class="form-label">Compounding Periods per Year:</label>
+                        <input type="number" class="form-control" id="compoundingPeriods" oninput="calculateAPY()">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="time" class="form-label">Time (Years):</label>
+                        <input type="number" class="form-control" id="time" oninput="calculateAPY()">
+                    </div>
+
+                    <!-- Results Display -->
+                    <div class="mt-4">
+                        <h4>APY Result:</h4>
+                        <p id="apyResult">---</p>
+                        <h4>Future Value:</h4>
+                        <p id="futureValue">---</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- APY Calculator Script -->
+<script>
+    function calculateAPY() {
+        const principal = parseFloat(document.getElementById('principal').value) || 0;
+        const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+        const compoundingPeriods = parseFloat(document.getElementById('compoundingPeriods').value) || 0;
+        const time = parseFloat(document.getElementById('time').value) || 0;
+
+        const apy = calculateAPYFormula(principal, interestRate, compoundingPeriods, time);
+        const futureValue = calculateFutureValue(principal, interestRate, compoundingPeriods, time);
+
+        document.getElementById('apyResult').innerText =  `${apy.toFixed(2)}%`;
+        document.getElementById('futureValue').innerText = `$${futureValue.toFixed(2)}`;
+    }
+
+    function calculateAPYFormula(principal, interestRate, compoundingPeriods, time) {
+        // APY formula: (1 + (r/n))^nt - 1
+        const r = interestRate / 100;
+        const n = compoundingPeriods;
+
+        return (Math.pow(1 + (r / n), n * time) - 1) * 100;
+    }
+
+    function calculateFutureValue(principal, interestRate, compoundingPeriods, time) {
+        // Future Value formula: P(1 + r/n)^(nt)
+        const r = interestRate / 100;
+        const n = compoundingPeriods;
+
+        return principal * Math.pow(1 + r / n, n * time);
+    }
+</script>
+
+
+<style>
+    /* 外部样式 */
+    body {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-4);
+    }
+
+    .card-body {
+        background: var(--ast-global-color-2);
+    }
+
+    .box input,
+    .box input:focus,
+    .box input:hover,
+    .box select {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-3);
+        border-color: var(--ast-global-color-1);
+    }
+
+    .box {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        /* background-color: #fff; */
+        background-clip: border-box;
+        border: 1px solid var(--ast-global-color-1);
+        border-radius: 6px;
+    }
+
+    .box-body {
+        flex: 1 1 auto;
+        padding: 1rem 1rem;
+    }
+
+</style>
+
+<style>
+    :root {
+        --ast-global-color-0: #16202a;
+        --ast-global-color-1: #4a4a4a;
+        --ast-global-color-2: #24292e;
+        --ast-global-color-3: #fdffff;
+        --ast-global-color-4: #fdffff;
+        --ast-global-color-5: #FFFFFF;
+        --ast-global-color-6: #3087cd;
+        --ast-global-color-7: #111111;
+        --ast-global-color-8: #111111;
+    }
+</style>

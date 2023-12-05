@@ -1,0 +1,175 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css"
+    integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="box">
+                <div class="box-body">
+                    <!-- Input Form for Each Stock Purchase -->
+                    <div id="stockInputs" class="mb-4">
+                        <!-- Each row represents a stock purchase -->
+                        <div class="row mb-3">
+                            <div class="col-md-5">
+                                <label for="stockQuantity" class="form-label">Shares Bought:</label>
+                                <input type="number" class="form-control" data-type="quantity">
+                            </div>
+                            <div class="col-md-5">
+                                <label for="stockPrice" class="form-label">Share Price($):</label>
+                                <input type="number" class="form-control" data-type="price">
+                            </div>
+                            <div class="col-md-2">                                
+                                <button onclick="deleteStockInput(this)" class="btn btn-danger delmt">
+                                    X 
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons to Add a New Stock Input or Calculate Average -->
+                    <button onclick="addStockInput()" class="btn btn-primary mb-3 ">Add Stock</button>
+                    <button onclick="calculateAverage()" class="btn btn-success mb-3 ms-1">Calculate</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary mb-3 ms-1">Clear</button>
+
+                    <!-- Output Section -->
+                    <div class="mt-4">
+                        <h4>Total Shares:</h4>
+                        <p id="totalShares">---</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4>Average Cost:</h4>
+                        <p id="averageCost">---</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addStockInput() {
+        const stockInputs = document.getElementById('stockInputs');
+
+        // Create a new row for stock input
+        const newRow = document.createElement('div');
+        newRow.classList.add('row', 'mb-3');
+
+        // Create input for Shares Bought
+        const quantityInput = document.createElement('div');
+        quantityInput.classList.add('col-md-5');
+        quantityInput.innerHTML = `<label for="stockQuantity" class="form-label">Shares Bought:</label>
+                                    <input type="number" class="form-control" data-type="quantity">`;
+
+        // Create input for Share Price
+        const priceInput = document.createElement('div');
+        priceInput.classList.add('col-md-5');
+        priceInput.innerHTML = `<label for="stockPrice" class="form-label">Share Price($):</label>
+                                 <input type="number" class="form-control" data-type="price">`;
+
+        // Create Delete Stock button with Bootstrap trash icon
+        const deleteButton = document.createElement('div');
+        deleteButton.classList.add('col-md-2');
+        deleteButton.innerHTML = `<button onclick="deleteStockInput(this)" class="btn btn-danger delmt">
+                                      X
+                                    </button>`;
+
+        // Append inputs and delete button to the new row
+        newRow.appendChild(quantityInput);
+        newRow.appendChild(priceInput);
+        newRow.appendChild(deleteButton);
+
+        // Append the new row to the stockInputs
+        stockInputs.appendChild(newRow);
+    }
+
+    function deleteStockInput(button) {
+        const row = button.closest('.row');
+        row.remove();
+        calculateAverage(); // Recalculate averages after deletion
+    }
+
+    function calculateAverage() {
+        const stockInputs = document.querySelectorAll('[data-type="quantity"]');
+        let totalShares = 0;
+        let totalInvestment = 0;
+
+        stockInputs.forEach((quantityInput) => {
+            const quantity = parseFloat(quantityInput.value) || 0; // Fallback to 0 if not a valid number
+            const priceInput = quantityInput.closest('.row').querySelector('[data-type="price"]');
+            const price = parseFloat(priceInput.value) || 0; // Fallback to 0 if not a valid number
+
+            totalShares += quantity;
+            totalInvestment += quantity * price;
+        });
+
+        const averageCost = totalShares ? totalInvestment / totalShares : 0;
+
+        document.getElementById('totalShares').innerText = totalShares;
+        document.getElementById('averageCost').innerText = `$${averageCost.toFixed(2)}`;
+    }
+
+    function clearInputs() {
+        document.querySelectorAll('[data-type="quantity"]').forEach((input) => (input.value = ''));
+        document.querySelectorAll('[data-type="price"]').forEach((input) => (input.value = ''));
+        document.getElementById('totalShares').innerText = '---';
+        document.getElementById('averageCost').innerText = '---';
+    }
+</script>
+
+<style>
+    /* 外部样式 */
+    body {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-4);
+    }
+
+    .card-body {
+        background: var(--ast-global-color-2);
+    }
+
+    .box input,
+    .box input:focus,
+    .box input:hover,
+    .box select {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-3);
+        border-color: var(--ast-global-color-1);
+    }
+
+    .box {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        /* background-color: #fff; */
+        background-clip: border-box;
+        border: 1px solid var(--ast-global-color-1);
+        border-radius: 6px;
+    }
+
+    .box-body {
+        flex: 1 1 auto;
+        padding: 1rem 1rem;
+    }
+
+    .delmt {
+        margin-top: 2.3rem;
+    }
+</style>
+
+<style>
+    :root {
+        --ast-global-color-0: #16202a;
+        --ast-global-color-1: #4a4a4a;
+        --ast-global-color-2: #24292e;
+        --ast-global-color-3: #fdffff;
+        --ast-global-color-4: #fdffff;
+        --ast-global-color-5: #FFFFFF;
+        --ast-global-color-6: #3087cd;
+        --ast-global-color-7: #111111;
+        --ast-global-color-8: #111111;
+    }
+</style>

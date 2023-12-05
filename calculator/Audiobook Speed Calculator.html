@@ -1,0 +1,220 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css"
+    integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+<div class="box box2 mw-700">
+    <div class="p30">
+        <div class="row row-m">
+            <div class="col-md-4">
+                <div class="m-label"><label>Audiobook Length:</label></div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="hours">Hours:</label>
+                        <input type="number" class="form-control mt-2" id="hours" min="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="minutes">Minutes:</label>
+                        <input type="number" class="form-control mt-2" id="minutes" min="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="seconds">Seconds:</label>
+                        <input type="number" class="form-control mt-2" id="seconds" min="0">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row-m">
+            <div class="col-md-4">
+                <label class="m-label" for="speed">Playback Speed:</label>
+            </div>
+
+            <div class="col-md-8">
+                <div class="col-md-6">
+                    <input type="number" class="form-control mt-2" id="speed" step="0.01" value="1.25">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="result">
+        <div class="row row-m">
+            <div class="col-md-4">
+                <label class="m-label" for="resultTime">Listening Time:</label>
+            </div>
+            <div class="col-md-8">
+                <div class="col-md-6">
+                    <input type="text" class="form-control mt-2" id="resultTime" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-m">
+            <div class="col-md-4">
+                <label class="m-label" for="timeSaved">Time Saved:</label>
+            </div>
+            <div class="col-md-8">
+                <div class="col-md-6">
+                    <input type="text" class="form-control mt-2" id="timeSaved" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function calculateTime() {
+            // 获取输入值
+            const hours = parseInt(document.getElementById("hours").value) || 0;
+            const minutes = parseInt(document.getElementById("minutes").value) || 0;
+            const seconds = parseInt(document.getElementById("seconds").value) || 0;
+            const speed = parseFloat(document.getElementById("speed").value);
+
+            // 计算新的时间
+            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            const newTotalSeconds = totalSeconds / speed;
+
+            const newHours = Math.floor(newTotalSeconds / 3600);
+            const newMinutes = Math.floor((newTotalSeconds % 3600) / 60);
+            const newSeconds = Math.floor(newTotalSeconds % 60);
+
+            // 格式化为 HH:MM:SS
+            const formattedTime = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}:${String(newSeconds).padStart(2, '0')}`;
+
+            // 更新结果框
+            document.getElementById("resultTime").value = formattedTime;
+
+            // 计算节省的时间
+            const savedTotalSeconds = totalSeconds - newTotalSeconds;
+            const savedHours = Math.floor(savedTotalSeconds / 3600);
+            const savedMinutes = Math.floor((savedTotalSeconds % 3600) / 60);
+            const savedSeconds = Math.floor(savedTotalSeconds % 60);
+
+            // 格式化为 HH:MM:SS
+            const formattedSavedTime = `${String(savedHours).padStart(2, '0')}:${String(savedMinutes).padStart(2, '0')}:${String(savedSeconds).padStart(2, '0')}`;
+
+            // 更新节省时间的结果框
+            document.getElementById("timeSaved").value = formattedSavedTime;
+        }
+
+        // 添加事件监听器，监听输入框的 input 事件
+        document.getElementById("hours").addEventListener("input", calculateTime);
+        document.getElementById("minutes").addEventListener("input", calculateTime);
+        document.getElementById("seconds").addEventListener("input", calculateTime);
+        document.getElementById("speed").addEventListener("input", calculateTime);
+    </script>
+</div>
+
+<style>
+    /* 外部样式 */
+    body {
+        background: var(--ast-global-color-0);
+        color:var(--ast-global-color-3);
+    }
+
+    .p30 {
+        padding: 10px 30px;
+    }
+
+    .p30 input {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-3);
+    }
+
+    .p30 input:focus {
+        background: var(--ast-global-color-2);
+        color: var(--ast-global-color-3);
+    }    
+
+    .box {
+        word-wrap: break-word;
+        word-break: break-word;
+        /* color: #525252; */
+        font-size: 18px;        
+        /* display: inline-block; */
+        width: auto;
+        margin: auto;
+        border: 1px solid var(--ast-global-color-1);
+        border-radius: 6px;
+    }
+
+    .box2 .row-m {
+        align-items: center;
+        position: relative;
+    }
+
+    .box2 label {
+        margin-bottom: 0;
+    }
+
+    .box2 .result input {
+        background: var(--ast-global-color-2);
+        color:var(--ast-global-color-3);
+    }
+
+    .box2 {
+        font-size: 16px;
+    }
+
+    .box2 .form-control {
+        font-size: 18px;
+        padding: 5px 7px;
+        border: 1px solid var(--ast-global-color-1);
+    }
+
+    .m-label>label,
+    label.m-label {
+        font-size: 16px;
+        display: block;
+        /* font-family: Inter, sans-serif; */
+        /* color: #505050; */
+        font-weight: 600;
+    }
+
+    .result {
+        border-top: 1px solid var(--ast-global-color-1);
+        /* background: #eee; */
+        border-radius: 0 0 6px 6px;
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+
+    .mw-500 {
+        max-width: 500px;
+        min-width: 500px;
+    }
+
+    .mw-700 {
+        max-width: 700px!important;
+        min-width: 700px!important;
+    }
+
+    .mw-900 {
+        max-width: 900px;
+        min-width: 700px;
+    }
+
+    .mw-max {
+        width: 100%;
+    }
+
+    .form-control,
+    .form-select {
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--ast-global-color-1);
+        padding: 8px 15px;
+    }
+</style>
+
+<style>
+    :root {
+      --ast-global-color-0: #16202a;
+      --ast-global-color-1: #4a4a4a;
+      --ast-global-color-2: #24292e;
+      --ast-global-color-3: #fdffff;
+      --ast-global-color-4: #fdffff;
+      --ast-global-color-5: #FFFFFF;
+      --ast-global-color-6: #3087cd;
+      --ast-global-color-7: #111111;
+      --ast-global-color-8: #111111;
+    }
+  </style>
