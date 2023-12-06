@@ -18,7 +18,7 @@
                     <!-- Text input form -->
                     <div class="mb-3">
                         <h4><label for="textInput" class="form-label">Enter Text:</label></h4>
-                        <textarea class="form-control" id="textInput" rows="4"
+                        <textarea class="form-control" id="textInput" rows="10"
                             placeholder="Hello! How are you?"></textarea>
                     </div>
 
@@ -68,13 +68,13 @@
                         <div class="mb-3 col-md-4">
                             <label for="paperType" class="form-label">Paper Type:</label>
                             <select class="form-select" id="paperType">
-                                <option value="White Paper 1">White Paper 1</option>
+                                <option value="White Paper 1" selected>White Paper 1</option>
                                 <option value="White Paper 2">White Paper 2</option>
                                 <option value="Straw Paper 1">Straw Paper 1</option>
                                 <option value="Straw Paper 2">Straw Paper 2</option>
-                                <option value="Square Lined Paper" selected>Square Lined Paper</option>
+                                <option value="Square Lined Paper">Square Lined Paper</option>
                                 <option value="Blue Lined Paper">Blue Lined Paper</option>
-                                <option value="Black Lined paper" >Black lined paper</option>
+                                <option value="Black Lined paper">Black lined paper</option>
                                 <option value="Gift 1">Gift 1</option>
                                 <option value="Gift 2">Gift 2</option>
                                 <option value="Love Letter 1">Love Letter 1</option>
@@ -92,7 +92,9 @@
                         <!-- <h4>Handwriting:</h4> -->
                         <div class="result">
                             <div class="paper" id="paper">
-                                <div id="previewText" class="handwriting-text"></div>
+                                <div id="textWrapper">
+                                    <div id="previewText" class="handwriting-text"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -189,19 +191,51 @@
 
         switch (paperType) {
             case "Square Lined Paper":
-                document.getElementById('previewText').style.padding = "92px 46px 71px 83px";
+                document.getElementById('textWrapper').style.padding = "84px 52px 70px 75px";
                 document.getElementById('previewText').style.lineHeight = "33.04px";
                 break;
             case "Blue Lined Paper":
-                document.getElementById('previewText').style.padding = "98px 46px 71px 133px";
+                document.getElementById('textWrapper').style.padding = "90px 38px 63px 125px";
                 document.getElementById('previewText').style.lineHeight = "33.04px";
                 break;
             case "Black Lined paper":
-                document.getElementById('previewText').style.padding = "95px 46px 71px 120px";
+                document.getElementById('textWrapper').style.padding = "87px 38px 70px 112px";
                 document.getElementById('previewText').style.lineHeight = "31.6px";
                 break;
+            case "Gift 1":
+                document.getElementById('textWrapper').style.padding = "200px 245px 300px 120px";
+                document.getElementById('previewText').style.lineHeight = "36px";
+                break;
+            case "Gift 2":
+                document.getElementById('textWrapper').style.padding = "240px 120px 260px 120px";
+                document.getElementById('previewText').style.lineHeight = "36px";
+                break;
+            case "Love Letter 1":
+                document.getElementById('textWrapper').style.padding = "160px 120px 380px 100px";
+                document.getElementById('previewText').style.lineHeight = "36px";
+                break;
+            case "Love Letter 2":
+                document.getElementById('textWrapper').style.padding = "80px 100px 420px 100px";
+                document.getElementById('previewText').style.lineHeight = "36px";
+                break;
+            case "Birthday 1":
+                document.getElementById('textWrapper').style.padding = "220px 100px 500px 100px";
+                document.getElementById('previewText').style.lineHeight = "36px";
+                break;
+            case "Birthday 2":
+                document.getElementById('textWrapper').style.padding = "240px 140px 450px 120px";
+                document.getElementById('previewText').style.lineHeight = "40px";
+                break;
+            case "Christmas 1":
+                document.getElementById('textWrapper').style.padding = "320px 120px 180px 120px";
+                document.getElementById('previewText').style.lineHeight = "36px";
+                break;
+            case "Christmas 2":
+                document.getElementById('textWrapper').style.padding = "160px 120px 130px 120px";
+                document.getElementById('previewText').style.lineHeight = "36px";
+                break;
             default:
-                document.getElementById('previewText').style.padding = "88px 42px 92px 110px";
+                document.getElementById('textWrapper').style.padding = "80px";
                 document.getElementById('previewText').style.lineHeight = "44px";
 
         }
@@ -217,7 +251,7 @@
         // 使用 html2canvas 将 'paper' div 渲染为 Canvas
         html2canvas(paper, {
             useCORS: true, // 处理跨域图片
-            scale: pixelRatio, // 使用设备的像素比率
+            scale: pixelRatio * 2, // 使用设备的像素比率
             logging: true // 开启日志以调试
         }).then(canvas => {
             // 获取当前日期和时间，并格式化为 "YYYYMMDD_HHMMSS" 的格式
@@ -257,9 +291,17 @@
 <style>
     #previewText {
         white-space: pre-wrap;
+        box-sizing: border-box;
         /* padding: 88px 42px 92px 110px; */
         /* 调整内边距以防文字超出图片 */
         width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 8px;
+    }
+
+    #textWrapper {
+        overflow: hidden;
     }
 
     .paper {
